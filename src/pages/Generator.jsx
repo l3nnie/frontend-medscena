@@ -26,7 +26,8 @@ const Generator = () => {
     setError(null);
     
     try {
-        const response = await fetch('https://frontend-medscena-tysg-8maubhtdz.vercel.app', {
+        const response = await fetch('https://server-medscena.onrender.com/api/scenarios', {
+
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
