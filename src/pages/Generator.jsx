@@ -26,37 +26,13 @@ const Generator = () => {
     setError(null);
     
     try {
-  const response = await fetch('https://server-medscena.onrender.com/api/scenarios', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(formData),
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  const data = await response.json();
-  setScenarios(data.scenarios);
-
-  setHistory(prev => [
-    {
-      ...formData,
-      date: new Date().toLocaleString(),
-      count: data.scenarios.length,
-    },
-    ...prev.slice(0, 9),
-  ]);
-} catch (err) {
-  setError(err.message);
-  console.error('Error:', err);
-} finally {
-  setLoading(false);
-}
-
-
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
