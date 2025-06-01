@@ -26,7 +26,7 @@ const Generator = () => {
     setError(null);
     
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/`, {
+      const response = await fetch('https://server-medscena.onrender.com/api/scenarios', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
