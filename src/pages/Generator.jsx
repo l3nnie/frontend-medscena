@@ -26,13 +26,12 @@ const Generator = () => {
     setError(null);
     
     try {
-      const response = await fetch('https://server-medscena.onrender.com/api/scenarios', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      });
+      const response = await fetch('https://server-medscena.onrender.com/api/scenarios/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
