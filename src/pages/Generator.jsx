@@ -24,29 +24,32 @@ const Generator = () => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    
+
     try {
+      // Fix: Change 'payload' to 'formData'
       const response = await fetch('https://server-medscena.onrender.com/api/scenarios/generate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(formData) // <--- CHANGED THIS LINE
           });
 
-      
+
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        // Attempt to parse error details from the response if available
+        const errorDetails = await response.json().catch(() => ({})); // Try to parse, but don't fail if not JSON
+        throw new Error(errorDetails.error || `HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       setScenarios(data.scenarios);
-      
+
       // Add to history
       setHistory(prev => [{
         ...formData,
         date: new Date().toLocaleString(),
         count: data.scenarios.length
       }, ...prev.slice(0, 9)]);
-      
+
     } catch (err) {
       setError(err.message);
       console.error('Error:', err);
@@ -81,7 +84,7 @@ const Generator = () => {
               required
             />
           </div>
-          
+
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="count">Number of Scenarios</label>
@@ -96,7 +99,7 @@ const Generator = () => {
                 ))}
               </select>
             </div>
-            
+
             <div className="form-group">
               <label htmlFor="difficulty">Difficulty Level</label>
               <select
@@ -111,7 +114,7 @@ const Generator = () => {
               </select>
             </div>
           </div>
-          
+
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="format">Format</label>
@@ -127,7 +130,7 @@ const Generator = () => {
                 <option value="osce">OSCE Station</option>
               </select>
             </div>
-            
+
             <div className="form-group">
               <label htmlFor="language">Language</label>
               <select
@@ -143,12 +146,12 @@ const Generator = () => {
               </select>
             </div>
           </div>
-          
+
           <button type="submit" disabled={loading}>
             {loading ? 'Generating...' : 'Generate Scenarios'}
           </button>
         </form>
-        
+
         {history.length > 0 && (
           <div className="history-section">
             <h4>Recent Searches</h4>
@@ -165,7 +168,7 @@ const Generator = () => {
           </div>
         )}
       </div>
-      
+
       <div className="results-section">
         {loading && (
           <div className="loading">
@@ -173,14 +176,14 @@ const Generator = () => {
             <p>Generating clinical scenarios...</p>
           </div>
         )}
-        
+
         {error && (
           <div className="error">
             <p>Error: {error}</p>
             <button onClick={() => setError(null)}>Dismiss</button>
           </div>
         )}
-        
+
         {!loading && !error && scenarios.length > 0 && (
           <>
             <div className="results-header">
@@ -191,13 +194,13 @@ const Generator = () => {
                 <button onClick={() => window.print()}>Print Scenarios</button>
               </div>
             </div>
-            
+
             <div className="scenarios-list">
               {scenarios.map((scenario, index) => (
-                <ScenarioCard 
-                  key={index} 
-                  scenario={scenario} 
-                  format={formData.format} 
+                <ScenarioCard
+                  key={index}
+                  scenario={scenario}
+                  format={formData.format}
                 />
               ))}
             </div>
